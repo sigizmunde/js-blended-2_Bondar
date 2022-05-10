@@ -1,42 +1,21 @@
-const refs = {
-	form: document.querySelector(".js-form"),
-	itemName: document.querySelector('[name="itemName"]'),
-	itemLink: document.querySelector('[name="itemLink"]'),
-	btn: document.querySelector(".submit"),
-};
-let deseases = [];
+import { DiseasesStorage } from "../js/storage-class.js";
+import { DiseaseController } from "../js/controller-class.js";
 
-refs.form.addEventListener("submit", onFormSubmit);
-refs.form.addEventListener("input", onFormInput);
+const refs = {};
 
-function onFormInput(evt) {
-	const inputName = evt.currentTarget.elements.itemName.value;
-	const inputLink = evt.currentTarget.elements.itemLink.value;
-	let data = inputName;
-	data = {
-		name: inputName,
-		href: inputLink,
-	};
-	localStorage.setItem("tempData", JSON.stringify(data, null, 2));
-}
+let diseases = new DiseasesStorage();
+let controller = null;
 
-function onFormSubmit(evt) {
-	evt.preventDefault();
-	let data = localStorage.getItem("deseases");
-	if (data) {
-		deseases = JSON.parse(data);
-	}
-	const form = evt.target;
-	const formData = new FormData(form);
-	const newData = {};
-	formData.forEach((value, key) => {
-		newData[key] = value;
-	});
-	const { itemName, itemLink } = newData;
-	// const inputLink = evt.target.elements.itemLink.value;
-	deseases = [...deseases, { name: itemName, href: itemLink }];
-	localStorage.setItem("deseases", JSON.stringify(deseases));
-}
+window.addEventListener("DOMContentLoaded", () => {
+  refs.form = document.querySelector(".js-form");
+  refs.diseases = document.querySelector(".diseases");
+
+  controller = new DiseaseController(diseases, refs.form, refs.diseases);
+
+  controller.restoreFormData();
+  controller.viewDiseaseList();
+});
+
 //todo: при відправці форми очистити tempData та очистити поля форми
 //todo: якщо щось є в tempData при перезавантаженні - заповнити форму
 //todo: виводимо на сторінку deseases
