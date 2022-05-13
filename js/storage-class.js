@@ -20,6 +20,7 @@ export class DiseasesStorage {
 
   set items(disArr) {
     this.#items = disArr;
+    this.synchronizeStorage("put");
   }
 
   synchronizeStorage(param) {
